@@ -1,0 +1,354 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FaCheckCircle, 
+  FaTimesCircle, 
+  FaTimes, 
+  FaUser, 
+  FaShieldAlt, 
+  FaFileAlt,
+  FaSpinner,
+  FaExclamationTriangle 
+} from 'react-icons/fa';
+import { updateUserByAdmin, verifyWorker } from '../lib/api';
+import toast from 'react-hot-toast';
+
+export default function UpdateUserModal({ isOpen, onClose, userId, initialData, onUserUpdated }) {
+  const [formData, setFormData] = useState({
+    role: 'client',
+    isVerified: false,
+    verificationStatus: 'pending',
+  });
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('basic');
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        role: initialData.user?.role || 'client',
+        isVerified: initialData.user?.isVerified || false,
+        verificationStatus: initialData.profile?.verificationStatus || 'pending',
+      });
+    }
+  }, [initialData]);
+
+  const handleChange = useCallback((e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  }, []);
+
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!formData.role) {
+        toast.error('Role is required', { 
+          position: 'top-right',
+          duration: 3000,
+          icon: '⚠️'
+        });
+        return;
+      }
+      
+      setLoading(true);
+      try {
+        const payload = { email: initialData.user?.email, ...formData };
+        
+        if (formData.role === 'client') {
+          delete payload.verificationStatus;
+          delete payload.name;
+          delete payload.phone;
+          delete payload.city;
+          delete payload.town;
+          delete payload.address;
+          delete payload.experience;
+          delete payload.skills;
+          delete payload.features;
+        }
+        
+        const response = await updateUserByAdmin(userId, payload);
+        toast.success('User updated successfully! 🎉', { 
+          position: 'top-right',
+          duration: 3000
+        });
+        onUserUpdated(userId, response);
+        onClose();
+      } catch (error) {
+        toast.error(`Failed to update user: ${error.message}`, { 
+          position: 'top-right',
+          duration: 4000,
+          icon: '❌'
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, userId, initialData, onUserUpdated, onClose]
+  );
+
+  const handleVerify = useCallback(
+    async (status) => {
+      setLoading(true);
+      try {
+        const response = await verifyWorker(userId, status);
+        toast.success(response.message || `User ${status} successfully! 🎉`, { 
+          position: 'top-right',
+          duration: 3000
+        });
+        onUserUpdated(userId, response);
+        onClose();
+      } catch (error) {
+        toast.error(`Failed to ${status} user: ${error.message}`, { 
+          position: 'top-right',
+          duration: 4000,
+          icon: '❌'
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userId, onUserUpdated, onClose]
+  );
+
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="update-user-modal-title"
+    >
+      <motion.div
+        initial={{ scale: 0.9, y: 50, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        exit={{ scale: 0.9, y: 50, opacity: 0 }}
+        transition={{ type: "spring", duration: 0.5 }}
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 px-8 py-6 relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-200"
+            disabled={loading}
+          >
+            <FaTimes />
+          </button>
+          
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <FaUser className="text-white text-xl" />
+            </div>
+            <div>
+              <h3
+                id="update-user-modal-title"
+                className="text-2xl font-bold text-white"
+              >
+                Update User
+              </h3>
+              <p className="text-blue-100 text-sm">
+                {initialData?.user?.email || 'User Management'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="border-b border-gray-200 bg-gray-50">
+          <div className="flex">
+            <button
+              onClick={() => setActiveTab('basic')}
+              className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${
+                activeTab === 'basic'
+                  ? 'text-indigo-600 border-b-2 border-indigo-600 bg-white'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <FaUser className="inline mr-2" />
+              Basic Info
+            </button>
+            {formData.role !== 'client' && (
+              <button
+                onClick={() => setActiveTab('verification')}
+                className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'verification'
+                    ? 'text-indigo-600 border-b-2 border-indigo-600 bg-white'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <FaFileAlt className="inline mr-2" />
+                Verification
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-8 max-h-96 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <AnimatePresence mode="wait">
+              {activeTab === 'basic' && (
+                <motion.div
+                  key="basic"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="space-y-6"
+                >
+                  {/* Role Selection */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700" htmlFor="role">
+                      <FaShieldAlt className="inline mr-2 text-indigo-500" />
+                      User Role
+                    </label>
+                    <select
+                      id="role"
+                      name="role"
+                      value={formData.role}
+                      onChange={handleChange}
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                      aria-label="User Role"
+                      disabled={loading}
+                    >
+                      <option value="client">👤 Client</option>
+                      <option value="worker">🔨 Worker</option>
+                      <option value="admin">👑 Admin</option>
+                      <option value="thekedar">🏗️ Thekedar</option>
+                    </select>
+                  </div>
+
+                  {/* Verification Toggle */}
+                  <div className="bg-gray-50 p-4 rounded-xl">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        id="isVerified"
+                        type="checkbox"
+                        name="isVerified"
+                        checked={formData.isVerified}
+                        onChange={handleChange}
+                        className="h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500 transition-all duration-200"
+                        aria-label="Verified Status"
+                        disabled={loading}
+                      />
+                      <div>
+                        <span className="text-sm font-semibold text-gray-700">
+                          Account Verified
+                        </span>
+                        <p className="text-xs text-gray-500">
+                          Mark this account as verified and trusted
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'verification' && formData.role !== 'client' && (
+                <motion.div
+                  key="verification"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-6"
+                >
+                  {/* Document Verification Status */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700" htmlFor="verificationStatus">
+                      <FaFileAlt className="inline mr-2 text-blue-500" />
+                      Document Verification Status
+                    </label>
+                    <select
+                      id="verificationStatus"
+                      name="verificationStatus"
+                      value={formData.verificationStatus}
+                      onChange={handleChange}
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                      aria-label="Verification Status"
+                      disabled={loading}
+                    >
+                      <option value="pending">⏳ Pending Review</option>
+                      <option value="approved">✅ Approved</option>
+                      <option value="rejected">❌ Rejected</option>
+                    </select>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                      <FaExclamationTriangle className="text-orange-500" />
+                      Quick Verification Actions
+                    </h4>
+                    <div className="flex gap-3">
+                      <motion.button
+                        type="button"
+                        onClick={() => handleVerify('approved')}
+                        disabled={loading}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Approve Verification"
+                      >
+                        {loading ? <FaSpinner className="animate-spin" /> : <FaCheckCircle />}
+                        Approve
+                      </motion.button>
+                      <motion.button
+                        type="button"
+                        onClick={() => handleVerify('rejected')}
+                        disabled={loading}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Reject Verification"
+                      >
+                        {loading ? <FaSpinner className="animate-spin" /> : <FaTimesCircle />}
+                        Reject
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 pt-6 border-t border-gray-200">
+              <motion.button
+                type="button"
+                onClick={onClose}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
+                disabled={loading}
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                type="submit"
+                disabled={loading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <FaSpinner className="animate-spin" />
+                    Updating...
+                  </span>
+                ) : (
+                  'Save Changes'
+                )}
+              </motion.button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
+    </motion.div>
+  
+
+)}

@@ -24,35 +24,53 @@ export default function SearchUsersPage() {
 
   return (
     <AdminLayout>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Search Users by Location</h2>
+      <div className="bg-white p-12 rounded-3xl shadow-2xl animate-fadeIn">
+        <h2 className="text-5xl font-extrabold text-gray-800 mb-8 tracking-tight">Search Users by Location</h2>
         <SearchForm onSearch={handleSearch} />
         {loading ? (
           <div className="flex justify-center">
-            <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+            <svg
+              className="animate-spin h-12 w-12 text-blue-600"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z" />
+            </svg>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border rounded-lg">
-              <thead className="bg-gray-50">
+            <table className="min-w-full bg-white border rounded-3xl shadow-2xl">
+              <thead className="bg-gradient-to-r from-blue-100 to-indigo-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">City</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Town</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Verification</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Email</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Name</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Role</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">City</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Town</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Verified</th>
+                  <th className="px-6 py-5 text-left text-sm font-semibold text-gray-700">Verification Status</th>
                 </tr>
               </thead>
               <tbody>
                 {profiles.map((profile) => (
-                  <tr key={profile.userId._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 border-b">{profile.userId.email}</td>
-                    <td className="px-6 py-4 border-b">{profile.name || 'N/A'}</td>
-                    <td className="px-6 py-4 border-b">{profile.city}</td>
-                    <td className="px-6 py-4 border-b">{profile.town}</td>
-                    <td className="px-6 py-4 border-b">
+                  <tr key={profile.userId._id} className="hover:bg-gray-50 transition duration-300">
+                    <td className="px-6 py-5 border-b">{profile.userId.email}</td>
+                    <td className="px-6 py-5 border-b">{profile.name || 'N/A'}</td>
+                    <td className="px-6 py-5 border-b">{profile.userId.role}</td>
+                    <td className="px-6 py-5 border-b">{profile.city}</td>
+                    <td className="px-6 py-5 border-b">{profile.town}</td>
+                    <td className="px-6 py-5 border-b">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          profile.userId.isVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {profile.userId.isVerified ? 'Verified' : 'Not Verified'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 border-b">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
                           profile.verificationStatus === 'approved'
                             ? 'bg-green-100 text-green-800'
                             : profile.verificationStatus === 'rejected'

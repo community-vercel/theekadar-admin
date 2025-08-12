@@ -26,11 +26,17 @@ export default function VerificationsPage() {
 
   return (
     <AdminLayout>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Pending Verifications</h2>
+      <div className="bg-white p-10 rounded-2xl shadow-2xl">
+        <h2 className="text-4xl font-extrabold text-gray-800 mb-8">Pending Verifications</h2>
         {loading ? (
           <div className="flex justify-center">
-            <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+            <svg
+              className="animate-spin h-10 w-10 text-blue-600"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z" />
+            </svg>
           </div>
         ) : (
           <VerificationTable verifications={verifications} />
