@@ -36,7 +36,7 @@ export default function AdminLayout({ children }) {
                     {/* </Link> */}
           <div className="flex space-x-12">
             <Link
-              href="/Linkdmin/dashboard"
+              href="/admin/dashboard"
               className="text-lg font-semibold hover:text-blue-200 transition duration-300"
             >
               Dashboard
