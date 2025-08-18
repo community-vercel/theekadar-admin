@@ -29,10 +29,16 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
       setFormData({
         role: initialData.user?.role || 'client',
         isVerified: initialData.user?.isVerified || false,
-        verificationStatus: initialData.profile?.verificationStatus || 'pending',
+        verificationStatus: initialData.verification?.status || 'pending',
       });
     }
   }, [initialData]);
+
+  useEffect(() => {
+    if (formData.role === 'client' && activeTab === 'verification') {
+      setActiveTab('basic');
+    }
+  }, [formData.role, activeTab]);
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -43,45 +49,47 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
     async (e) => {
       e.preventDefault();
       if (!formData.role) {
-        toast.error('Role is required', { 
+        toast.error('Role is required', {
           position: 'top-right',
           duration: 3000,
-          icon: '⚠️'
+          icon: '⚠️',
         });
         return;
       }
-      
+
       setLoading(true);
       try {
-        const payload = { email: initialData.user?.email, ...formData };
-        
-        if (formData.role === 'client') {
-          delete payload.verificationStatus;
-          delete payload.name;
-          delete payload.phone;
-          delete payload.city;
-          delete payload.town;
-          delete payload.address;
-          delete payload.experience;
-          delete payload.skills;
-          delete payload.features;
+        const payload = {
+          email: initialData.user?.email,
+          role: formData.role,
+          isVerified: formData.isVerified,
+        };
+
+        if (formData.role !== 'client') {
+          payload.verificationStatus = formData.verificationStatus;
         }
-        
+
         const response = await updateUserByAdmin(userId, payload);
-        toast.success('User updated successfully! 🎉', { 
+        toast.success('User updated successfully!', {
           position: 'top-right',
-          duration: 3000
+          duration: 3000,
         });
-        onUserUpdated(userId, response);
-        onClose();
+        console.log('Updating UI with:', { userId, payload }); // Debug log
+        onUserUpdated(userId, {
+          user: { _id: userId, ...payload },
+          profile: formData.role !== 'client' ? { userId: { _id: userId }, verificationStatus: formData.verificationStatus } : null,
+          verification: formData.role !== 'client' ? { userId: { _id: userId }, status: formData.verificationStatus } : null,
+        });
       } catch (error) {
-        toast.error(`Failed to update user: ${error.message}`, { 
+        toast.error(`Failed to update user: ${error.message}`, {
           position: 'top-right',
           duration: 4000,
-          icon: '❌'
+          icon: '❌',
         });
       } finally {
         setLoading(false);
+        console.log('Calling onClose in finally block');
+        onClose();
       }
     },
     [formData, userId, initialData, onUserUpdated, onClose]
@@ -92,23 +100,29 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
       setLoading(true);
       try {
         const response = await verifyWorker(userId, status);
-        toast.success(response.message || `User ${status} successfully! 🎉`, { 
+        toast.success(`User ${status} successfully!`, {
           position: 'top-right',
-          duration: 3000
+          duration: 3000,
         });
-        onUserUpdated(userId, response);
+        console.log('Updating UI with verification:', { userId, status }); // Debug log
+        onUserUpdated(userId, {
+          user: { _id: userId, email: initialData.user?.email, role: formData.role, isVerified: formData.isVerified },
+          profile: { userId: { _id: userId }, verificationStatus: status },
+          verification: { userId: { _id: userId }, status },
+        });
+        console.log('Calling onClose after verification');
         onClose();
       } catch (error) {
-        toast.error(`Failed to ${status} user: ${error.message}`, { 
+        toast.error(`Failed to ${status} user: ${error.message}`, {
           position: 'top-right',
           duration: 4000,
-          icon: '❌'
+          icon: '❌',
         });
       } finally {
         setLoading(false);
       }
     },
-    [userId, onUserUpdated, onClose]
+    [userId, formData, initialData, onUserUpdated, onClose]
   );
 
   if (!isOpen) return null;
@@ -128,44 +142,37 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
         initial={{ scale: 0.9, y: 50, opacity: 0 }}
         animate={{ scale: 1, y: 0, opacity: 1 }}
         exit={{ scale: 0.9, y: 50, opacity: 0 }}
-        transition={{ type: "spring", duration: 0.5 }}
+        transition={{ type: 'spring', duration: 0.5 }}
         className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 px-8 py-6 relative">
+        <div className="bg-indigo-600 px-8 py-6 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-200"
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white"
             disabled={loading}
           >
             <FaTimes />
           </button>
-          
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
               <FaUser className="text-white text-xl" />
             </div>
             <div>
-              <h3
-                id="update-user-modal-title"
-                className="text-2xl font-bold text-white"
-              >
+              <h3 id="update-user-modal-title" className="text-2xl font-bold text-white">
                 Update User
               </h3>
-              <p className="text-blue-100 text-sm">
+              <p className="text-blue-200 text-sm">
                 {initialData?.user?.email || 'User Management'}
               </p>
             </div>
           </div>
         </div>
-
-        {/* Tab Navigation */}
         <div className="border-b border-gray-200 bg-gray-50">
           <div className="flex">
             <button
               onClick={() => setActiveTab('basic')}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 px-6 py-4 text-sm font-medium ${
                 activeTab === 'basic'
                   ? 'text-indigo-600 border-b-2 border-indigo-600 bg-white'
                   : 'text-gray-500 hover:text-gray-700'
@@ -177,7 +184,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
             {formData.role !== 'client' && (
               <button
                 onClick={() => setActiveTab('verification')}
-                className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 px-6 py-4 text-sm font-medium ${
                   activeTab === 'verification'
                     ? 'text-indigo-600 border-b-2 border-indigo-600 bg-white'
                     : 'text-gray-500 hover:text-gray-700'
@@ -189,8 +196,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
             )}
           </div>
         </div>
-
-        {/* Content */}
         <div className="p-8 max-h-96 overflow-y-auto">
           <form onSubmit={handleSubmit} className="space-y-6">
             <AnimatePresence mode="wait">
@@ -202,7 +207,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  {/* Role Selection */}
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700" htmlFor="role">
                       <FaShieldAlt className="inline mr-2 text-indigo-500" />
@@ -213,18 +217,16 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                       name="role"
                       value={formData.role}
                       onChange={handleChange}
-                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
                       aria-label="User Role"
                       disabled={loading}
                     >
-                      <option value="client">👤 Client</option>
-                      <option value="worker">🔨 Worker</option>
-                      <option value="admin">👑 Admin</option>
-                      <option value="thekedar">🏗️ Thekedar</option>
+                      <option value="client">Client</option>
+                      <option value="worker">Worker</option>
+                      <option value="admin">Admin</option>
+                      <option value="thekedar">Thekedar</option>
                     </select>
                   </div>
-
-                  {/* Verification Toggle */}
                   <div className="bg-gray-50 p-4 rounded-xl">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
@@ -249,7 +251,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                   </div>
                 </motion.div>
               )}
-
               {activeTab === 'verification' && formData.role !== 'client' && (
                 <motion.div
                   key="verification"
@@ -258,7 +259,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  {/* Document Verification Status */}
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700" htmlFor="verificationStatus">
                       <FaFileAlt className="inline mr-2 text-blue-500" />
@@ -269,18 +269,16 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                       name="verificationStatus"
                       value={formData.verificationStatus}
                       onChange={handleChange}
-                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white"
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
                       aria-label="Verification Status"
                       disabled={loading}
                     >
-                      <option value="pending">⏳ Pending Review</option>
-                      <option value="approved">✅ Approved</option>
-                      <option value="rejected">❌ Rejected</option>
+                      <option value="pending">Pending Review</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
                     </select>
                   </div>
-
-                  {/* Quick Actions */}
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                  <div className="bg-gray-50 p-6 rounded-xl">
                     <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
                       <FaExclamationTriangle className="text-orange-500" />
                       Quick Verification Actions
@@ -292,7 +290,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                         disabled={loading}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Approve Verification"
                       >
                         {loading ? <FaSpinner className="animate-spin" /> : <FaCheckCircle />}
@@ -304,7 +302,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                         disabled={loading}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-500 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Reject Verification"
                       >
                         {loading ? <FaSpinner className="animate-spin" /> : <FaTimesCircle />}
@@ -315,15 +313,13 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Action Buttons */}
             <div className="flex gap-4 pt-6 border-t border-gray-200">
               <motion.button
                 type="button"
                 onClick={onClose}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200"
+                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200"
                 disabled={loading}
               >
                 Cancel
@@ -333,7 +329,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                 disabled={loading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -349,6 +345,5 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
         </div>
       </motion.div>
     </motion.div>
-  
-
-)}
+  );
+}

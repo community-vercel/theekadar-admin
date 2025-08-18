@@ -28,11 +28,16 @@ const UserTable = memo(
       profile: null,
     });
 
+    // Debug log to confirm prop updates
+    console.log('UserTable re-rendered with props:', { users, profiles, verifications });
+
     const openModal = useCallback((type, userId, profile = null) => {
+      console.log('Opening modal:', { type, userId, profile });
       setModalState({ type, userId, profile });
     }, []);
 
     const closeModal = useCallback(() => {
+      console.log('Closing modal');
       setModalState({ type: null, userId: null, profile: null });
     }, []);
 
@@ -53,7 +58,7 @@ const UserTable = memo(
 
     // Sort and filter valid users
     const sortedUsers = users
-      .filter((user) => user && user._id) // Ensure user and _id exist
+      .filter((user) => user && user._id)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     // Animation variants
@@ -189,6 +194,17 @@ const UserTable = memo(
           onUserUpdated={onUpdate}
         />
       </div>
+    );
+  },
+  // Memo comparison function to ensure re-render on prop changes
+  (prevProps, nextProps) => {
+    return (
+      prevProps.users === nextProps.users &&
+      prevProps.profiles === nextProps.profiles &&
+      prevProps.verifications === nextProps.verifications &&
+      prevProps.totalPages === nextProps.totalPages &&
+      prevProps.currentPage === nextProps.currentPage &&
+      prevProps.searchQuery === nextProps.searchQuery
     );
   }
 );

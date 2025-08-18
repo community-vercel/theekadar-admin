@@ -1,10 +1,10 @@
-// components/LinkdminLayout.jsx
+// components/AdminLayout.jsx
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAdmin } from '../lib/auth';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast'; // ✅ import Toaster
 import Link from 'next/link';
 
 export default function AdminLayout({ children }) {
@@ -27,13 +27,17 @@ export default function AdminLayout({ children }) {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200">
       <nav className="bg-gradient-to-r from-blue-600 to-indigo-800 text-white p-6 shadow-2xl sticky top-0 z-50">
         <div className="container mx-auto flex justify-between items-center">
-                     {/* <Link href='/admin/dashboard'> */}
-
-          <Link href='/admin/dashboard' className="flex items-center">
-            <img src="/logo.png" alt="Theekadar Logo" className="h-16 mr-4 transition-transform duration-300 hover:scale-110" />
-            <h1 className="text-3xl font-extrabold tracking-tight">Theekadar Admin</h1>
+          <Link href="/admin/dashboard" className="flex items-center">
+            <img
+              src="/logo.png"
+              alt="Theekadar Logo"
+              className="h-16 mr-4 transition-transform duration-300 hover:scale-110"
+            />
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              Theekadar Admin
+            </h1>
           </Link>
-                    {/* </Link> */}
+
           <div className="flex space-x-12">
             <Link
               href="/admin/dashboard"
@@ -63,6 +67,9 @@ export default function AdminLayout({ children }) {
         </div>
       </nav>
       <main className="container mx-auto p-12">{children}</main>
+      
+      {/* ✅ Hot-toast provider */}
+      <Toaster position="top-right" />
     </div>
   );
 }
