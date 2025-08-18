@@ -29,7 +29,7 @@ export default function AdminLayout({ children }) {
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/admin/dashboard" className="flex items-center">
             <img
-              src="/logo.jpg"
+              src="/logo.jpeg"
               alt="Theekadar Logo"
               className="h-16 mr-4 transition-transform duration-300 hover:scale-110"
             />
