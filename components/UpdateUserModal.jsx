@@ -16,10 +16,11 @@ import { updateUserByAdmin, verifyWorker } from '../lib/api';
 import toast from 'react-hot-toast';
 
 export default function UpdateUserModal({ isOpen, onClose, userId, initialData, onUserUpdated }) {
+  console.log('initial data',initialData)
   const [formData, setFormData] = useState({
-    role: 'client',
-    isVerified: false,
-    verificationStatus: 'pending',
+    role: initialData?.user?.role || 'client',
+    isVerified: initialData?.user?.isVerified || false,
+    verificationStatus: initialData?.profile?.status || 'pending',
   });
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
@@ -29,7 +30,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
       setFormData({
         role: initialData.user?.role || 'client',
         isVerified: initialData.user?.isVerified || false,
-        verificationStatus: initialData.verification?.status || 'pending',
+        verificationStatus: initialData?.profile?.status || 'pending',
       });
     }
   }, [initialData]);
@@ -224,7 +225,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                       <option value="client">Client</option>
                       <option value="worker">Worker</option>
                       <option value="admin">Admin</option>
-                      <option value="thekedar">Thekedar</option>
+                      <option value="thekadar">Thekedar</option>
                     </select>
                   </div>
                   <div className="bg-gray-50 p-4 rounded-xl">

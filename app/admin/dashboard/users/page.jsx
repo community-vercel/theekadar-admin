@@ -34,6 +34,8 @@ export default function UsersPage() {
       setProfiles(response.profiles || []);
       setVerifications(response.verifications || []);
       setTotalPages(response.totalPages || 1);
+setProfiles([...response.verifications]);
+
       
       if (showRefreshing) {
         toast.success('Data refreshed successfully!', { 
@@ -59,6 +61,7 @@ export default function UsersPage() {
     setUsers((prev) => prev.filter((user) => user._id !== userId));
     setProfiles((prev) => prev.filter((p) => p.userId._id !== userId));
     setVerifications((prev) => prev.filter((v) => v.userId._id !== userId));
+    
   }, []);
 
   const handleUpdate = useCallback((userId, updatedUser) => {
@@ -136,7 +139,8 @@ export default function UsersPage() {
   // Debug log to monitor state changes
   useEffect(() => {
     console.log('UsersPage state updated:', { users, profiles, verifications });
-  }, [users, profiles, verifications]);
+
+  }, []);
 
   return (
     <AdminLayout>
