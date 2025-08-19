@@ -8,7 +8,7 @@ import { fetchUsers } from '../../../../lib/api';
 import toast from 'react-hot-toast';
 import SkeletonLoader from '../../../../components/SkeletonLoader';
 import SearchBar from '../../../../components/SearchBar';
-import { FaUsers, FaUserCheck, FaUserClock, FaSync } from 'react-icons/fa';
+import { FaUsers, FaUserCheck, FaUserClock, FaSync,FaSearch } from 'react-icons/fa';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -141,79 +141,87 @@ setProfiles([...response.verifications]);
     console.log('UsersPage state updated:', { users, profiles, verifications });
 
   }, []);
-
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
-        >
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 User Management
               </h1>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600">
                 Manage users, verifications, and account settings
               </p>
             </div>
-            <motion.button
+            <button
               onClick={handleRefresh}
               disabled={refreshing}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium disabled:opacity-50"
+              className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors duration-200"
             >
-              <FaSync className={refreshing ? 'animate-spin' : ''} />
+              <FaSync className={`text-lg ${refreshing ? 'animate-spin' : ''}`} />
               {refreshing ? 'Refreshing...' : 'Refresh Data'}
-            </motion.button>
+            </button>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        >
-          <div className="bg-blue-500 p-4 rounded-lg text-white shadow-md">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm font-medium">Total Users</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-blue-100 text-sm font-medium mb-1">Total Users</p>
+                <p className="text-3xl font-bold">{stats.total}</p>
               </div>
-              <FaUsers className="text-3xl text-blue-200" />
+              <div className="bg-blue-400 bg-opacity-30 rounded-lg p-3">
+                <FaUsers className="text-2xl" />
+              </div>
             </div>
           </div>
-          <div className="bg-green-500 p-4 rounded-lg text-white shadow-md">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-green-100 text-sm font-medium">Verified Users</p>
-                <p className="text-2xl font-bold">{stats.verified}</p>
-              </div>
-              <FaUserCheck className="text-3xl text-green-200" />
-            </div>
-          </div>
-          <div className="bg-orange-500 p-4 rounded-lg text-white shadow-md">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-orange-100 text-sm font-medium">Pending Verifications</p>
-                <p className="text-2xl font-bold">{stats.pending}</p>
-              </div>
-              <FaUserClock className="text-3xl text-orange-200" />
-            </div>
-          </div>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
-        >
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-emerald-100 text-sm font-medium mb-1">Verified Users</p>
+                <p className="text-3xl font-bold">{stats.verified}</p>
+              </div>
+              <div className="bg-emerald-400 bg-opacity-30 rounded-lg p-3">
+                <FaUserCheck className="text-2xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-amber-100 text-sm font-medium mb-1">Pending Verifications</p>
+                <p className="text-3xl font-bold">{stats.pending}</p>
+              </div>
+              <div className="bg-amber-400 bg-opacity-30 rounded-lg p-3">
+                <FaUserClock className="text-2xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search and Table Section */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search users by name, email, or role..."
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          {/* Table Container */}
           {loading ? (
             <SkeletonLoader />
           ) : (
@@ -229,7 +237,7 @@ setProfiles([...response.verifications]);
               searchQuery={searchQuery}
             />
           )}
-        </motion.div>
+        </div>
       </div>
     </AdminLayout>
   );

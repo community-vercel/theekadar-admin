@@ -1,14 +1,14 @@
 'use client';
 
-import { memo, useCallback, useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import UserRow from './UserRow';
+import UserCard from './UserCard';
 import Pagination from './Pagination';
 import Modal from './Modal';
 import UpdateUserModal from './UpdateUserModal';
 import { deleteUser } from '../lib/api';
-import toast from 'react-hot-toast';
-import UserCard from './UserCard';
 
 const UserTable = memo(
   ({
@@ -22,76 +22,50 @@ const UserTable = memo(
     onUpdate = () => {},
     searchQuery = '',
   }) => {
-    const [modalState, setModalState] = useState({
-      type: null,
-      userId: null,
-      profile: null,
-    });
-
-    // Debug log to confirm prop updates
-    console.log('UserTable re-rendered with props:', { users, profiles, verifications });
+    const [modal, setModal] = useState({ type: null, userId: null, profile: null });
 
     const openModal = useCallback((type, userId, profile = null) => {
-      console.log('Opening modal:', { type, userId, profile });
-      setModalState({ type, userId, profile });
+      setModal({ type, userId, profile });
     }, []);
 
     const closeModal = useCallback(() => {
-      console.log('Closing modal');
-      setModalState({ type: null, userId: null, profile: null });
+      setModal({ type: null, userId: null, profile: null });
     }, []);
 
     const handleDelete = useCallback(async () => {
-      if (!modalState.userId) {
-        toast.error('No user selected for deletion', { position: 'top-right' });
-        return;
-      }
+      if (!modal.userId) return toast.error('No user selected');
       try {
-        await deleteUser(modalState.userId);
-        toast.success('User deleted successfully', { position: 'top-right' });
-        onDelete(modalState.userId);
+        await deleteUser(modal.userId);
+        toast.success('User deleted');
+        onDelete(modal.userId);
         closeModal();
       } catch (error) {
-        toast.error(`Error deleting user: ${error.message}`, { position: 'top-right' });
+        toast.error(`Delete failed: ${error.message}`);
       }
-    }, [modalState.userId, onDelete, closeModal]);
+    }, [modal.userId, onDelete, closeModal]);
 
-    // Sort and filter valid users
     const sortedUsers = users
-      .filter((user) => user && user._id)
+      .filter((u) => u && u._id)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    // Animation variants
-    const tableVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-    };
-
-    const cardVariants = {
-      hidden: { opacity: 0, scale: 0.95 },
-      visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeOut' } },
-      exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
-    };
-
     return (
-      <div className="container max-w-full px-4 sm:px-6 lg:px-8 py-6">
+      <div className="container max-w-full px-0 sm:px-6 lg:px-0 py-6">
+        {/* Empty State */}
         {sortedUsers.length === 0 && searchQuery ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center py-12 text-gray-500 text-lg font-medium bg-white rounded-lg shadow-md"
+            className="text-center py-12 text-gray-500 text-lg font-medium bg-white rounded-xl shadow-md"
           >
-            No users found for &quot;{searchQuery}&quot;.
+            No users found for <span className="font-semibold">"{searchQuery}"</span>.
           </motion.div>
         ) : (
           <>
-            {/* Table for Desktop */}
+            {/* Desktop Table */}
             <motion.div
-              variants={tableVariants}
-              initial="hidden"
-              animate="visible"
-              className="hidden md:block overflow-x-auto rounded-2xl shadow-2xl border border-gray-100 bg-white"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="hidden md:block overflow-x-auto rounded-2xl shadow-xl border border-gray-100 bg-white"
             >
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gradient-to-r from-indigo-600 to-blue-500 text-white">
@@ -103,15 +77,15 @@ const UserTable = memo(
                       'City',
                       'Town',
                       'Verified',
-                      'Document Type',
+                      'Doc Type',
                       'Document',
-                      'Submitted At',
-                      'Verification Status',
+                      'Submitted',
+                      'Status',
                       'Actions',
                     ].map((header) => (
                       <th
                         key={header}
-                        className="px-4 py-3 md:px-6 md:py-4 text-left text-xs md:text-sm font-semibold tracking-wider uppercase"
+                        className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider"
                       >
                         {header}
                       </th>
@@ -121,15 +95,16 @@ const UserTable = memo(
                 <tbody className="divide-y divide-gray-100 bg-gray-50">
                   <AnimatePresence>
                     {sortedUsers.map((user, idx) => {
-                      const userProfile = profiles?.find((p) => p?.userId?._id === user._id) || null;
-                      const userVerification = verifications?.find((v) => v?.userId?._id === user._id) || null;
+                      const profile = profiles.find((p) => p?.userId?._id === user._id) || null;
+                      const verification =
+                        verifications.find((v) => v?.userId?._id === user._id) || null;
 
                       return (
                         <UserRow
                           key={user._id}
                           user={user}
-                          profile={userProfile}
-                          verification={userVerification}
+                          profile={profile}
+                          verification={verification}
                           index={idx}
                           onOpenModal={openModal}
                         />
@@ -140,25 +115,25 @@ const UserTable = memo(
               </table>
             </motion.div>
 
-            {/* Card Layout for Mobile */}
+            {/* Mobile Cards */}
             <div className="md:hidden space-y-6 py-6">
               <AnimatePresence>
                 {sortedUsers.map((user, idx) => {
-                  const userProfile = profiles?.find((p) => p?.userId?._id === user._id) || null;
-                  const userVerification = verifications?.find((v) => v?.userId?._id === user._id) || null;
+                  const profile = profiles.find((p) => p?.userId?._id === user._id) || null;
+                  const verification =
+                    verifications.find((v) => v?.userId?._id === user._id) || null;
 
                   return (
                     <motion.div
                       key={user._id}
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
                     >
                       <UserCard
                         user={user}
-                        profile={userProfile}
-                        verification={userVerification}
+                        profile={profile}
+                        verification={verification}
                         index={idx}
                         onOpenModal={openModal}
                       />
@@ -176,37 +151,35 @@ const UserTable = memo(
           </>
         )}
 
+        {/* Delete Confirmation */}
         <Modal
-          isOpen={modalState.type === 'delete'}
+          isOpen={modal.type === 'delete'}
           onClose={closeModal}
-          title="Confirm Delete"
+          title="Delete User"
           message="Are you sure you want to delete this user?"
           onConfirm={handleDelete}
           confirmButtonClass="bg-red-600 hover:bg-red-700"
           cancelButtonClass="bg-gray-300 hover:bg-gray-400"
         />
 
+        {/* Update Modal */}
         <UpdateUserModal
-          isOpen={modalState.type === 'update'}
+          isOpen={modal.type === 'update'}
           onClose={closeModal}
-          userId={modalState.userId}
-          initialData={modalState.profile}
+          userId={modal.userId}
+          initialData={modal.profile}
           onUserUpdated={onUpdate}
         />
       </div>
     );
   },
-  // Memo comparison function to ensure re-render on prop changes
-  (prevProps, nextProps) => {
-    return (
-      prevProps.users === nextProps.users &&
-      prevProps.profiles === nextProps.profiles &&
-      prevProps.verifications === nextProps.verifications &&
-      prevProps.totalPages === nextProps.totalPages &&
-      prevProps.currentPage === nextProps.currentPage &&
-      prevProps.searchQuery === nextProps.searchQuery
-    );
-  }
+  (prev, next) =>
+    prev.users === next.users &&
+    prev.profiles === next.profiles &&
+    prev.verifications === next.verifications &&
+    prev.totalPages === next.totalPages &&
+    prev.currentPage === next.currentPage &&
+    prev.searchQuery === next.searchQuery
 );
 
 export default UserTable;

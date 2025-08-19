@@ -124,7 +124,7 @@ export default function Dashboard() {
 
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gray-100 p-6 sm:p-8">
+      <div className="min-h-screen bg-gray-100 p-6 sm:p-8 w-full max-w-full">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
