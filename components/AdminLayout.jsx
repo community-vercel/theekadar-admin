@@ -154,7 +154,7 @@ export default function AdminLayout({ children }) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="pt-22 px-4">
+      <main className="pt-22 ">
       
             {children}
       

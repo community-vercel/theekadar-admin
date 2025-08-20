@@ -188,7 +188,7 @@ export default function AdminReviewsPage() {
               </div>
             </div>
             
-            <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="bg-gradient-to-br from-yellow-500 to-emerald-600 to-green-900 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-yellow-100 font-medium">Average Rating</p>
