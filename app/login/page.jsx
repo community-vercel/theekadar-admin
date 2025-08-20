@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800">
       <div className="bg-white p-12 rounded-3xl shadow-2xl w-full max-w-lg transform transition-all duration-500 hover:scale-105 animate-fadeIn">
         <div className="flex justify-center mb-8">
-          <img src="/logo.png" alt="Theekadar Logo" className="h-24 animate-pulse" />
+          <img src="/logo.jpeg" alt="Theekadar Logo" className="h-24 animate-pulse" />
         </div>
         <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Admin Login</h2>
         <form onSubmit={handleSubmit}>
