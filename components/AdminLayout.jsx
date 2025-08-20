@@ -44,6 +44,10 @@ export default function AdminLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+
+
+
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
 
