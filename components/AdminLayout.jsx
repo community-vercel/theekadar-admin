@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHome, FiUsers, FiSearch, FiLogOut, FiMenu, FiX, FiShield, FiBell } from 'react-icons/fi';
+import { FiHome, FiUsers, FiSearch, FiLogOut, FiMenu, FiX, FiShield, FiBell, FiStar } from 'react-icons/fi';
 import Link from 'next/link';
 
 // Mock auth function
@@ -43,6 +43,8 @@ export default function AdminLayout({ children }) {
     { href: '/admin/dashboard', icon: FiHome, label: 'Dashboard' },
     { href: '/admin/dashboard/users', icon: FiUsers, label: 'Users' },
     { href: '/admin/dashboard/search', icon: FiSearch, label: 'Search' },
+        { href: '/admin/dashboard/reviews', icon: FiStar, label: 'User Reviews' },
+
   ];
 
   return (
