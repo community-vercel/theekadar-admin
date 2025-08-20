@@ -31,8 +31,6 @@ const decodeJWT = (token) => {
     return null;
   }
 };
-
-
 // Function to check if token is expired
 const isTokenExpired = (token) => {
   if (!token) return true;
