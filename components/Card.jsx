@@ -9,6 +9,7 @@ import {
   FaQuoteLeft, 
 
 } from 'react-icons/fa';
+import StarRating from './Starrating';
 
 
 
