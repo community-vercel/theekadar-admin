@@ -31,7 +31,6 @@ const decodeJWT = (token) => {
     return null;
   }
 };
-// Function to check if token is expired
 const isTokenExpired = (token) => {
   if (!token) return true;
   const decoded = decodeJWT(token);
@@ -39,9 +38,6 @@ const isTokenExpired = (token) => {
   const currentTime = Math.floor(Date.now() / 1000);
   return decoded.exp < currentTime;
 };
-
-
-
 export default function AdminLayout({ children }) {
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false); // guard state
