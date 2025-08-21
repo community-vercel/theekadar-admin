@@ -28,7 +28,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
   const [activeTab, setActiveTab] = useState('basic');
 
 
-  
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -38,6 +38,10 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
       });
     }
   }, [initialData]);
+
+
+
+  
 
   useEffect(() => {
     if (formData.role === 'client' && activeTab === 'verification') {
