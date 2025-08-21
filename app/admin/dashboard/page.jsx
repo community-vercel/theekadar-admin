@@ -286,10 +286,14 @@ export default function Dashboard() {
     </motion.div>
   );
 
+
+
+
   return (
     <AdminLayout>
       <div className="min-h-screen px-12 bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header */}
+        
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: -20 }}
