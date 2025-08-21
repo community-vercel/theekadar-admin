@@ -55,7 +55,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
   }, []);
 
 
-  
 
 const handleSubmit = useCallback(
     async (e) => {
