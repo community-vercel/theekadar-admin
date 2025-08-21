@@ -123,6 +123,7 @@ const handleSubmit = useCallback(
   );
 
 
+  
 
   if (!isOpen) return null;
 
@@ -250,6 +251,7 @@ const handleSubmit = useCallback(
                   </div>
                 </motion.div>
               )}
+
               {activeTab === 'verification' && formData.role !== 'client' && (
                 <motion.div
                   key="verification"
@@ -264,6 +266,7 @@ const handleSubmit = useCallback(
                       Document Verification Status
                     </label>
                     <select
+
                       id="verificationStatus"
                       name="verificationStatus"
                       value={formData.verificationStatus}
