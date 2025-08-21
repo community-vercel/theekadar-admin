@@ -122,6 +122,8 @@ const handleSubmit = useCallback(
     [userId, formData, initialData, onUserUpdated, onClose]
   );
 
+
+  
   if (!isOpen) return null;
 
   return (
