@@ -54,6 +54,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
     setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   }, []);
 
+
   
 
 const handleSubmit = useCallback(
