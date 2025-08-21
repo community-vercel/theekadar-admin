@@ -8,11 +8,12 @@ import { fetchUsers } from '../../../../lib/api';
 import toast from 'react-hot-toast';
 import SkeletonLoader from '../../../../components/SkeletonLoader';
 import SearchBar from '../../../../components/SearchBar';
-import { FaUsers, FaUserCheck, FaUserClock, FaSync,FaSearch } from 'react-icons/fa';
+import { FaUsers, FaUserCheck, FaUserClock, FaSync, FaSearch } from 'react-icons/fa';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  const [profile, setProfile] = useState([]);
   const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -32,17 +33,9 @@ export default function UsersPage() {
       const response = await fetchUsers(currentPage, pageSize);
       setUsers(response.users || []);
       setProfiles(response.profiles || []);
+      setProfile(response.profiles || []);
       setVerifications(response.verifications || []);
       setTotalPages(response.totalPages || 1);
-setProfiles([...response.verifications]);
-
-      
-      if (showRefreshing) {
-        toast.success('Data refreshed successfully!', { 
-          position: 'top-right',
-          duration: 2000
-        });
-      }
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to fetch users. Please try again.', { 
@@ -57,15 +50,15 @@ setProfiles([...response.verifications]);
   }, [currentPage]);
 
   const handleDelete = useCallback((userId) => {
-    console.log('Deleting user:', userId); // Debug log
+    console.log('Deleting user:', userId);
     setUsers((prev) => prev.filter((user) => user._id !== userId));
     setProfiles((prev) => prev.filter((p) => p.userId._id !== userId));
+    setProfile((prev) => prev.filter((p) => p.userId._id !== userId));
     setVerifications((prev) => prev.filter((v) => v.userId._id !== userId));
-    
   }, []);
 
   const handleUpdate = useCallback((userId, updatedUser) => {
-    console.log('Handling update in UsersPage:', { userId, updatedUser }); // Debug log
+    console.log('Handling update in UsersPage:', { userId, updatedUser });
     const userData = updatedUser.user || {};
     const profileData = updatedUser.profile || null;
     const verificationData = updatedUser.verification || null;
@@ -75,6 +68,19 @@ setProfiles([...response.verifications]);
     );
 
     setProfiles((prev) => {
+      if (!profileData) {
+        return prev.filter((p) => p.userId._id !== userId);
+      }
+      const existingProfile = prev.find((p) => p.userId._id === userId);
+      if (existingProfile) {
+        return prev.map((p) =>
+          p.userId._id === userId ? { ...p, ...profileData } : p
+        );
+      }
+      return [...prev, { ...profileData, userId: { _id: userId } }];
+    });
+
+    setProfile((prev) => {
       if (!profileData) {
         return prev.filter((p) => p.userId._id !== userId);
       }
@@ -102,7 +108,7 @@ setProfiles([...response.verifications]);
   }, []);
 
   const filteredUsers = useMemo(() => {
-    console.log('Recalculating filteredUsers with searchQuery:', searchQuery); // Debug log
+    console.log('Recalculating filteredUsers with searchQuery:', searchQuery);
     if (!searchQuery) return users;
     const lowerQuery = searchQuery.toLowerCase();
     return users.filter((user) => {
@@ -120,7 +126,7 @@ setProfiles([...response.verifications]);
     const verifiedUsers = users.filter((u) => u.isVerified).length;
     const pendingVerifications = verifications.filter((v) => v.status === 'pending').length;
     
-    console.log('Recalculating stats:', { totalUsers, verifiedUsers, pendingVerifications }); // Debug log
+    console.log('Recalculating stats:', { totalUsers, verifiedUsers, pendingVerifications });
     return {
       total: totalUsers,
       verified: verifiedUsers,
@@ -136,11 +142,6 @@ setProfiles([...response.verifications]);
     loadUsers();
   }, [loadUsers]);
 
-  // Debug log to monitor state changes
-  useEffect(() => {
-    console.log('UsersPage state updated:', { users, profiles, verifications });
-
-  }, []);
   return (
     <AdminLayout>
       <div className="space-y-8">
@@ -228,6 +229,7 @@ setProfiles([...response.verifications]);
             <UserTable
               users={filteredUsers}
               profiles={profiles}
+              profile={profile}
               verifications={verifications}
               totalPages={totalPages}
               currentPage={currentPage}

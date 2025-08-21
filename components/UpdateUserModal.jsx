@@ -41,7 +41,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
 
 
 
-  
+
 
   useEffect(() => {
     if (formData.role === 'client' && activeTab === 'verification') {
@@ -235,6 +235,8 @@ if (!isOpen) return null;
                       <option value="client">Client</option>
                       <option value="worker">Worker</option>
                       <option value="admin">Admin</option>
+                      <option value="contractor">Contractor</option>
+
                       <option value="thekadar">Thekedar</option>
                     </select>
                   </div>
