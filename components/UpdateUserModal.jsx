@@ -122,8 +122,6 @@ const handleSubmit = useCallback(
     [userId, formData, initialData, onUserUpdated, onClose]
   );
 
-
-
   if (!isOpen) return null;
 
   return (
@@ -151,8 +149,6 @@ const handleSubmit = useCallback(
             className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white"
             disabled={loading}
           >
-            
-
             <FaTimes />
           </button>
           <div className="flex items-center gap-4">
