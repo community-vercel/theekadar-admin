@@ -46,7 +46,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
     setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   }, []);
 
-  const handleSubmit = useCallback(
+const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       if (!formData.role) {
@@ -71,11 +71,10 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
         }
 
         const response = await updateUserByAdmin(userId, payload);
-        toast.success('User updated successfully!', {
+        toast.success('User updated successfully! Notification sent to user.', {
           position: 'top-right',
           duration: 3000,
         });
-        console.log('Updating UI with:', { userId, payload }); // Debug log
         onUserUpdated(userId, {
           user: { _id: userId, ...payload },
           profile: formData.role !== 'client' ? { userId: { _id: userId }, verificationStatus: formData.verificationStatus } : null,
@@ -89,7 +88,6 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
         });
       } finally {
         setLoading(false);
-        console.log('Calling onClose in finally block');
         onClose();
       }
     },
@@ -101,17 +99,15 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
       setLoading(true);
       try {
         const response = await verifyWorker(userId, status);
-        toast.success(`User ${status} successfully!`, {
+        toast.success(`User ${status} successfully! Notification sent to user.`, {
           position: 'top-right',
           duration: 3000,
         });
-        console.log('Updating UI with verification:', { userId, status }); // Debug log
         onUserUpdated(userId, {
           user: { _id: userId, email: initialData.user?.email, role: formData.role, isVerified: formData.isVerified },
           profile: { userId: { _id: userId }, verificationStatus: status },
           verification: { userId: { _id: userId }, status },
         });
-        console.log('Calling onClose after verification');
         onClose();
       } catch (error) {
         toast.error(`Failed to ${status} user: ${error.message}`, {
@@ -125,6 +121,8 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
     },
     [userId, formData, initialData, onUserUpdated, onClose]
   );
+
+
 
   if (!isOpen) return null;
 
@@ -218,7 +216,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                       name="role"
                       value={formData.role}
                       onChange={handleChange}
-                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 text-gray-900"
                       aria-label="User Role"
                       disabled={loading}
                     >
@@ -270,7 +268,7 @@ export default function UpdateUserModal({ isOpen, onClose, userId, initialData, 
                       name="verificationStatus"
                       value={formData.verificationStatus}
                       onChange={handleChange}
-                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
+                      className="w-full p-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 text-gray-900"
                       aria-label="Verification Status"
                       disabled={loading}
                     >
