@@ -122,9 +122,12 @@ const handleSubmit = useCallback(
     [userId, formData, initialData, onUserUpdated, onClose]
   );
 
-
   
-  if (!isOpen) return null;
+
+
+
+if (!isOpen) return null;
+
 
   return (
     <motion.div
@@ -145,6 +148,7 @@ const handleSubmit = useCallback(
         className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
+        
         <div className="bg-indigo-600 px-8 py-6 relative">
           <button
             onClick={onClose}
