@@ -294,41 +294,54 @@ export default function Dashboard() {
     <AdminLayout>
       <div className="min-h-screen px-12 bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Header */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Analytics Dashboard
-              </h1>
-              <p className="text-gray-600">Comprehensive insights into user data and trends</p>
-            </div>
-            <motion.button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-lg disabled:opacity-50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {refreshing ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Refreshing...</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <FaUps className="w-5 h-5" />
-                  <span>Refresh Data</span>
-                </div>
-              )}
-            </motion.button>
-          </div>
-        </motion.div>
-
+<motion.div
+  className="mb-6 xs:mb-8"
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
+    <div>
+      <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-gray-900 mb-1 xs:mb-2">
+        Analytics Dashboard
+      </h1>
+      <p className="text-sm xs:text-base text-gray-600">
+        Comprehensive insights into user data and trends
+      </p>
+    </div>
+    <motion.button
+      onClick={handleRefresh}
+      disabled={refreshing}
+className="
+  w-full sm:w-full lg:w-[160px] 
+  px-3 sm:px-6 
+  py-3 sm:py-3
+  lg:mt-4 
+  bg-blue-600 text-white 
+  rounded-xl 
+  hover:bg-blue-700 
+  transition-colors duration-200 
+  font-medium shadow-lg 
+  disabled:opacity-50 
+  self-start lg:self-end
+"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {refreshing ? (
+        <div className="flex items-center justify-center space-x-1.5 xs:space-x-2">
+          <div className="w-3 h-3 xs:w-4 xs:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-xs xs:text-sm sm:text-base">Refreshing...</span>
+        </div>
+      ) : (
+        <div className="flex flex-col xs:flex-row items-center justify-center xs:space-x-1.5 sm:space-x-2 space-y-1 xs:space-y-0">
+          <FaUps className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+          <span className="text-xs xs:text-sm sm:text-base">Refresh Data</span>
+        </div>
+      )}
+    </motion.button>
+  </div>
+</motion.div>
         <AnimatePresence>
           {isLoading ? (
             <LoadingSpinner />

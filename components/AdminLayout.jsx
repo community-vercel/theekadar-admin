@@ -142,6 +142,52 @@ export default function AdminLayout({ children }) {
           </div>
         </div>
       </motion.nav>
+   {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed top-0 right-0 h-full w-64 bg-gray-900/90 backdrop-blur-md z-40 lg:hidden"
+          >
+            <div className="p-4 pt-20 space-y-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 p-3 rounded-lg hover:bg-blue-800/50 transition-colors"
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center space-x-2 p-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
+              >
+                <FiLogOut className="w-5 h-5" />
+                <span>Logout</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu Backdrop */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Mobile menu + backdrop */}
 

@@ -165,7 +165,7 @@ const UserRow = memo(({ user, profile, verification, index, onOpenModal, isSelec
         <div className="flex items-center gap-1 text-sm text-gray-600">
           <FaMapMarkerAlt className="text-xs" />
           <span>{profile?.city || 'N/A'}</span>
-          {profile?.town && <span>, {profile.town}</span>}
+{profile?.town && <span>, {profile.town.slice(0, 16)}</span>}
         </div>
       </td>
       <td className="px-6 py-4">
@@ -239,7 +239,7 @@ const UserCard = memo(({ user, profile, verification, index, onOpenModal }) => {
             <FaUserCircle className="text-xl" />
           </div>
           <div>
-            <h4 className="font-bold text-gray-900">{profile?.name || 'Unnamed User'}</h4>
+            <h4 className="font-bold text-gray-900">{profile?.name || user.name}</h4>
             <p className="text-sm text-gray-500 flex items-center gap-1">
               <FaEnvelope className="text-xs" />
               {user.email}
