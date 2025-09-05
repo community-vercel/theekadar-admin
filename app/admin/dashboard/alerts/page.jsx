@@ -76,19 +76,19 @@ export default function AdminPage() {
             </div>
           ) : (
             <>
-              <div className="bg-gradient-to-br from-[#f093fb] to-[#f5576c] text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
+              <div className="bg-gradient-to-br from-[#006666] to-[#006666] text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
                 <h3 className="text-2xl font-bold mb-2">{stats?.totalUsers || '0'}</h3>
                 <p className="text-base opacity-90">Total Users</p>
               </div>
-              <div className="bg-gradient-to-br from-[#f093fb] to-[#f5576c] text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
+              <div className="bg-gradient-to-br from-[#006666] to-[#006666]  text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
                 <h3 className="text-2xl font-bold mb-2">{stats?.usersWithFCM || '0'}</h3>
                 <p className="text-base opacity-90">Users with FCM Token</p>
               </div>
-              <div className="bg-gradient-to-br from-[#f093fb] to-[#f5576c] text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
+              <div className="bg-gradient-to-br from-[#006666] to-[#006666]  text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
                 <h3 className="text-2xl font-bold mb-2">{stats?.fcmCoverage || '0%'}</h3>
                 <p className="text-base opacity-90">FCM Coverage</p>
               </div>
-              <div className="bg-gradient-to-br from-[#f093fb] to-[#f5576c] text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
+              <div className="bg-gradient-to-br from-[#006666] to-[#006666]  text-white p-6 rounded-2xl text-center transform transition-all hover:-translate-y-1 hover:shadow-xl">
                 <h3 className="text-2xl font-bold mb-2">{stats?.roleBreakdown?.length || 0}</h3>
                 <p className="text-base opacity-90">Active Roles</p>
               </div>
