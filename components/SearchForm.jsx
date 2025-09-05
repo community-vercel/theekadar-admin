@@ -11,6 +11,7 @@ export default function SearchForm({ onSearch }) {
     onSearch(city, town);
   };
 
+  
   return (
     <form
       onSubmit={handleSubmit}
