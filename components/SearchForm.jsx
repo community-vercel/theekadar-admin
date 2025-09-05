@@ -10,6 +10,8 @@ export default function SearchForm({ onSearch }) {
     e.preventDefault();
     onSearch(city, town);
   };
+
+  
   return (
     <form
       onSubmit={handleSubmit}
