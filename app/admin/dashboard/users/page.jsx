@@ -107,19 +107,26 @@ export default function UsersPage() {
     });
   }, []);
 
-  const filteredUsers = useMemo(() => {
-    console.log('Recalculating filteredUsers with searchQuery:', searchQuery);
-    if (!searchQuery) return users;
-    const lowerQuery = searchQuery.toLowerCase();
-    return users.filter((user) => {
-      const profile = profiles.find((p) => p.userId._id === user._id);
-      return (
-        user.email.toLowerCase().includes(lowerQuery) ||
-        (profile?.name?.toLowerCase() || '').includes(lowerQuery) ||
-        user.role.toLowerCase().includes(lowerQuery)
-      );
-    });
-  }, [users, profiles, searchQuery]);
+ const filteredUsers = useMemo(() => {
+  console.log('Recalculating filteredUsers with searchQuery:', searchQuery);
+  if (!searchQuery) return users;
+  const lowerQuery = searchQuery.toLowerCase();
+
+  return users.filter((user) => {
+    const profile = profiles.find((p) => p.userId?._id === user._id);
+
+    const email = user.email?.toLowerCase() || '';
+    const role = user.role?.toLowerCase() || '';
+    const name = profile?.name?.toLowerCase() || '';
+
+    return (
+      email.includes(lowerQuery) ||
+      name.includes(lowerQuery) ||
+      role.includes(lowerQuery)
+    );
+  });
+}, [users, profiles, searchQuery])
+
 
   const stats = useMemo(() => {
     const totalUsers = users.length;

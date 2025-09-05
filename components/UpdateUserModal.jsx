@@ -243,6 +243,7 @@ if (!isOpen) return null;
                       <option value="worker">Worker</option>
                       <option value="admin">Admin</option>
                       <option value="contractor">Contractor</option>
+                      <option value="consultant">Consultant</option>
 
                       <option value="thekadar">Thekedar</option>
                     </select>
