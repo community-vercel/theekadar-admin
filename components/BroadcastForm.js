@@ -60,7 +60,7 @@ export default function BroadcastForm({ showAlert, showLoading, showResponseDeta
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label htmlFor="broadcastTitle" className="block mb-2 font-semibold text-gray-600">
+          <label htmlFor="broadcastTitle" className="block mb-2 font-semibold text-gray-900">
             Notification Title
           </label>
           <input
@@ -71,7 +71,7 @@ export default function BroadcastForm({ showAlert, showLoading, showResponseDeta
             onChange={handleChange}
             placeholder="Enter notification title"
             required
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all text-gray-900"
           />
         </div>
         <div className="mb-5">
@@ -85,7 +85,7 @@ export default function BroadcastForm({ showAlert, showLoading, showResponseDeta
             onChange={handleChange}
             placeholder="Enter your message here"
             required
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all min-h-[100px] resize-y"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all min-h-[100px] resize-y text-gray-900"
           />
         </div>
         <div className="mb-5">
@@ -97,7 +97,7 @@ export default function BroadcastForm({ showAlert, showLoading, showResponseDeta
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all text-gray-900"
           >
             <option value="general">General</option>
             <option value="announcement">Announcement</option>
@@ -108,13 +108,13 @@ export default function BroadcastForm({ showAlert, showLoading, showResponseDeta
         <div className="flex gap-4 flex-wrap">
           <button
             type="submit"
-            className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg text-gray-900"
           >
             Send to All Users
           </button>
           <button
             type="button"
-            className="bg-gradient-to-br from-[#ffecd2] to-[#fcb69f] text-gray-800 px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            className="bg-gradient-to-br from-[#ffecd2] to-[#fcb69f] text-gray-800 px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg text-gray-900"
             onClick={loadStats}
           >
             Refresh Stats

@@ -98,7 +98,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
             onChange={handleChange}
             placeholder="Enter notification title"
             required
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all text-gray-900"
           />
         </div>
         <div className="mb-5">
@@ -112,7 +112,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
             onChange={handleChange}
             placeholder="Enter your message here"
             required
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all min-h-[100px] resize-y"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all min-h-[100px] resize-y text-gray-900"
           />
         </div>
         <div className="mb-5">
@@ -121,7 +121,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
             {roles.map((role) => (
               <div
                 key={role.id}
-                className="flex items-center gap-2 p-3 bg-white border-2 border-gray-300 rounded-lg cursor-pointer hover:border-[#667eea] hover:bg-blue-50 transition-all"
+                className="flex items-center gap-2 p-3 bg-white border-2 border-gray-300 rounded-lg cursor-pointer hover:border-[#667eea] hover:bg-blue-50 transition-all text-gray-900"
                 onClick={handleCheckboxClick}
               >
                 <input
@@ -140,7 +140,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
           </div>
         </div>
         <div className="mb-5">
-          <label htmlFor="roleType" className="block mb-2 font-semibold text-gray-600">
+          <label htmlFor="roleType" className="block mb-2 font-semibold text-gray-900">
             Notification Type
           </label>
           <select
@@ -148,7 +148,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all"
+            className="w-full p-3 border-2 border-gray-300 rounded-xl bg-white focus:outline-none focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/10 transition-all text-gray-900"
           >
             <option value="role-specific">Role Specific</option>
             <option value="announcement">Announcement</option>
@@ -159,7 +159,7 @@ export default function RoleForm({ showAlert, showLoading, showResponseDetails }
         <div className="flex gap-4 flex-wrap">
           <button
             type="submit"
-            className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white px-8 py-3 rounded-xl font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 hover:shadow-lg text-gray-900"
           >
             Send to Selected Roles
           </button>
