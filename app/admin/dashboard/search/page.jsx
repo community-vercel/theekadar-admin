@@ -22,6 +22,7 @@ export default function SearchUsersPage() {
   };
 
   return (
+    
     <AdminLayout>
       <div className="bg-white p-6 rounded-2xl shadow-2xl animate-fadeIn sm:p-12 sm:rounded-3xl">
         <h2 className="text-3xl font-extrabold text-gray-800 mb-6 tracking-tight sm:text-5xl sm:mb-8">

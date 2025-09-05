@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHome, FiUsers, FiSearch, FiLogOut, FiMenu, FiX, FiBell, FiStar } from 'react-icons/fi';
+import { FiHome, FiUsers, FiSearch, FiLogOut, FiMenu, FiX, FiBell, FiStar,FiAlertCircle } from 'react-icons/fi';
 import Link from 'next/link';
 
 // Mock toast for demo
@@ -81,6 +81,8 @@ export default function AdminLayout({ children }) {
     { href: '/admin/dashboard/users', icon: FiUsers, label: 'Users' },
     { href: '/admin/dashboard/search', icon: FiSearch, label: 'Search' },
     { href: '/admin/dashboard/reviews', icon: FiStar, label: 'User Reviews' },
+        { href: '/admin/dashboard/alerts', icon: FiAlertCircle, label: 'Send Alerts' },
+
   ];
 
   // ⛔ Don’t render anything until auth check is complete

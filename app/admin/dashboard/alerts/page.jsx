@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import BroadcastForm from '../../../../components/BroadcastForm';
 import RoleForm from '../../../../components/RoleForm';
 import ResponseDetails from '../../../../components/ResponseDetails';
+import AdminLayout from '@/components/AdminLayout';
 
 const API_BASE = '/api/admin'; // Adjust to your API base URL
 
@@ -56,7 +57,8 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <AdminLayout>
+    <div className="max-w-full mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white p-8 text-center">
         <h1 className="text-4xl font-bold mb-2">🚀 Broadcast Notifications</h1>
@@ -129,5 +131,6 @@ export default function AdminPage() {
         <ResponseDetails response={responseDetails} />
       </div>
     </div>
+    </AdminLayout>
   );
 }
