@@ -16,7 +16,6 @@ import {
 import { updateUserByAdmin, verifyWorker } from '../lib/api';
 import toast from 'react-hot-toast';
 
-
 export default function UpdateUserModal({ isOpen, onClose, userId, initialData, onUserUpdated }) {
   console.log('initial data',initialData)
   const [formData, setFormData] = useState({
@@ -247,6 +246,7 @@ if (!isOpen) return null;
                       <option value="thekadar">Thekedar</option>
                     </select>
                   </div>
+
                   <div className="bg-gray-50 p-4 rounded-xl">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
