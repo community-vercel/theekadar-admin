@@ -318,6 +318,8 @@ const UserCard = memo(({ user, profile, verification, index, onOpenModal }) => {
       </div>
     </motion.div>
   );
+
+  
 });
 
 const UserTable = memo(({
@@ -331,6 +333,7 @@ const UserTable = memo(({
   onDelete = () => {},
   onUpdate = () => {},
   searchQuery = '',
+  
 }) => {
   const [modal, setModal] = useState({ type: null, userId: null, profile: null });
   const [selectedUserIds, setSelectedUserIds] = useState([]);
